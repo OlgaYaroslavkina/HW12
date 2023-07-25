@@ -56,12 +56,16 @@ class Birthday(Field):
         except ValueError:
             # raise ValueError("Invalid date format. Expected format: YYYY-MM-DD")
             raise BirthdayError()
+    
+    def __str__(self) -> str:
+        return self.value.strftime("%Y-%m-%d")
 
 
 class Record:
     def __init__(
-        self, name: Name, phone: Phone = None, birthday: Birthday = None
-    ) -> None:
+        self, name: Name, 
+        phone: Phone = None, 
+        birthday: Birthday = None) -> None:
         self.name = name
         self.birthday = birthday
         self.phones = []
@@ -105,7 +109,9 @@ class Record:
 
     def __str__(self) -> str:
         phones = "; ".join(str(p) for p in self.phones) if self.phones else "not added"
-        return f"Contact name - {self.name}, contact phones - {phones}"
+        return "Contact name - {}{}{}".format(self.name,
+                                              ', contact phones - ' + phones,
+                                              ', birthday - ' + str(self.birthday) if self.birthday else '')
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(name={self.name}, phone={self.phones}, birthday={self.birthday})"
@@ -133,7 +139,7 @@ class AddressBook(UserDict):
 
     def add_record(self, record: Record):
         self.data[str(record.name)] = record
-        return f"Contact {record} added successfully"
+        return f"{record} added successfully"
     
     def save_to_file(self, file_path):
         with open (file_path, "wb") as fh:
