@@ -20,14 +20,14 @@ def input_error(func):
 @input_error
 def add_command(*args):
     name = Name(args[0])
-    phone = Phone(args[1])
-    birthday = None
-    if len(args) == 3:
-        birthday = Birthday(args[2])
+    phone = Phone(args[1]) if len(args) > 1 else None
+    birthday = Birthday(args[2]) if len(args) > 2 else None
+    # if len(args) == 3:
+    #     birthday = Birthday(args[2])
     rec: Record = address_book.get(str(name))
     if rec:
         return rec.add_phone(phone)
-    rec = Record(name, phone)
+    rec = Record(name, phone, birthday)
     return address_book.add_record(rec)
 
 
@@ -101,7 +101,7 @@ def main():
     while True:
         user_input = input("Введіть команду: ")
         cmd, data = parser(user_input)
-        result = cmd(*data)
+        # result = cmd(*data)
         # print(result)
         if cmd == exit_command:
             # break
