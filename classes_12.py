@@ -3,6 +3,7 @@ from collections.abc import Iterator
 from datetime import datetime
 import pickle
 
+
 class BirthdayError(Exception):
     ...
 
@@ -31,7 +32,13 @@ class Field:
 
 
 class Name(Field):
-    ...
+    def __hash__(self):
+        return hash(self.value)
+
+    def __eq__(self, other):
+        if not isinstance(other, Name):
+            return False
+        return self.value == other.value
 
 
 class Phone(Field):
@@ -41,7 +48,7 @@ class Phone(Field):
 
 
 class Birthday(Field):
-    def __init___(self, value):
+    def __init__(self, value):
         self.__value = None
         self.value = value
 
@@ -134,19 +141,19 @@ class AddressBook(UserDict):
     def add_record(self, record: Record):
         self.data[str(record.name)] = record
         return f"Contact {record} added successfully"
-    
+
     def save_to_file(self, file_path):
-        with open (file_path, "wb") as fh:
+        with open(file_path, "wb") as fh:
             pickle.dump(self.data, fh)
+
     def load_from_file(self, file_path):
         try:
-            with open (file_path, "rb") as fh:
+            with open(file_path, "rb") as fh:
                 data = pickle.load(fh)
                 self.data.update(data)
             return True
         except:
             return False
-
 
     def __str__(self) -> str:
         return "\n".join(str(r) for r in self.data.values())
